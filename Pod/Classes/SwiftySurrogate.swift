@@ -27,12 +27,12 @@ let HIGH_SURROGATE_MASK: UInt32           = (1 << SURROGATE_BITS) - 1
 let LOW_SURROGATE_MASK: UInt32            = (1 << SURROGATE_BITS) - 1
 let UNICODE_PLANE_MIN: UInt32             = 0x010000
 
-let HIGH_SURROGATE_MIN: UInt32            = 0xD800 // 上位サロゲート領域開始位置
-let HIGH_SURROGATE_MAX: UInt32            = 0xDBFF // 上位サロゲート領域終了位置
-let LOW_SURROGATE_MIN: UInt32             = 0xDC00 // 下位サロゲート領域開始位置
-let LOW_SURROGATE_MAX: UInt32             = 0xDFFF // 下位サロゲート領域終了位置
-let SURROGATE_MIN: UInt32                 = HIGH_SURROGATE_MIN  // サロゲート領域開始位置
-let SURROGATE_MAX: UInt32                 = LOW_SURROGATE_MAX   // サロゲート領域終了位置
+let HIGH_SURROGATE_MIN: UInt32            = 0xD800
+let HIGH_SURROGATE_MAX: UInt32            = 0xDBFF
+let LOW_SURROGATE_MIN: UInt32             = 0xDC00
+let LOW_SURROGATE_MAX: UInt32             = 0xDFFF
+let SURROGATE_MIN: UInt32                 = HIGH_SURROGATE_MIN
+let SURROGATE_MAX: UInt32                 = LOW_SURROGATE_MAX
 
 let ErrorDomain: String! = "SwiftySurrogateErrorDomain"
 
