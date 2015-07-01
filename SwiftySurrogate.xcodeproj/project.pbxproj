@@ -10,6 +10,7 @@
 		C8C21E001B43E8D60079DB2C /* SwiftySurrogate.h in Headers */ = {isa = PBXBuildFile; fileRef = C8C21DFF1B43E8D60079DB2C /* SwiftySurrogate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C8C21E061B43E8D60079DB2C /* SwiftySurrogate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8C21DFA1B43E8D60079DB2C /* SwiftySurrogate.framework */; };
 		C8C21E0D1B43E8D60079DB2C /* SwiftySurrogateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8C21E0C1B43E8D60079DB2C /* SwiftySurrogateTests.swift */; };
+		C8C21E1B1B43F1820079DB2C /* SwiftySurrogate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8C21E1A1B43F1820079DB2C /* SwiftySurrogate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +30,7 @@
 		C8C21E051B43E8D60079DB2C /* SwiftySurrogateTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftySurrogateTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C8C21E0B1B43E8D60079DB2C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C8C21E0C1B43E8D60079DB2C /* SwiftySurrogateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftySurrogateTests.swift; sourceTree = "<group>"; };
+		C8C21E1A1B43F1820079DB2C /* SwiftySurrogate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftySurrogate.swift; path = Pod/Classes/SwiftySurrogate.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +74,7 @@
 			isa = PBXGroup;
 			children = (
 				C8C21DFF1B43E8D60079DB2C /* SwiftySurrogate.h */,
+				C8C21E1A1B43F1820079DB2C /* SwiftySurrogate.swift */,
 				C8C21DFD1B43E8D60079DB2C /* Supporting Files */,
 			);
 			path = SwiftySurrogate;
@@ -209,6 +212,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C8C21E1B1B43F1820079DB2C /* SwiftySurrogate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -399,6 +403,7 @@
 				C8C21E121B43E8D60079DB2C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		C8C21E131B43E8D60079DB2C /* Build configuration list for PBXNativeTarget "SwiftySurrogateTests" */ = {
 			isa = XCConfigurationList;
@@ -407,6 +412,7 @@
 				C8C21E151B43E8D60079DB2C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
