@@ -16,7 +16,7 @@ class TableOfContentsSpec: QuickSpec {
         }
         
         it("2-way conversion ok?") {
-            expect("D83D:DE04") == "\(SwiftySurrogate.convUnicodeScalarToSurrogate(0x1F604).0.hexExpression()):\(SwiftySurrogate.convUnicodeScalarToSurrogate(0x1F604).1.hexExpression())"
+            expect("D83D:DE04") == "\(SwiftySurrogate.convUnicodeScalarToSurrogatePair(0x1F604).0!.hexExpression()):\(SwiftySurrogate.convUnicodeScalarToSurrogatePair(0x1F604).1!.hexExpression())"
             
             expect(UInt32(0x1F604)) == SwiftySurrogate.convSurrogateToUnicodeScalar("D83D:DE04")
         }

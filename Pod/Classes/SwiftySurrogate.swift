@@ -34,8 +34,6 @@ let LOW_SURROGATE_MAX: UInt32             = 0xDFFF // 下位サロゲート領�
 let SURROGATE_MIN: UInt32                 = HIGH_SURROGATE_MIN  // サロゲート領域開始位置
 let SURROGATE_MAX: UInt32                 = LOW_SURROGATE_MAX   // サロゲート領域終了位置
 
-let EMPTY_STRING = ""
-
 let ErrorDomain: String! = "SwiftySurrogateErrorDomain"
 
 let ErrorFailParseHexStringToInt: Int! = 501
@@ -59,10 +57,13 @@ extension UInt32 {
 
 public class SwiftySurrogate {
     
-    private static var _error: NSError?
     static var error: NSError?
     
 // MARK: Public Methods
+    
+    public class func lastError() -> NSError? {
+        return error
+    }
     
     public class func decodeHexStringToUInt32(hexString: String) -> UInt32? {
         let scanner = NSScanner(string: hexString)
@@ -74,21 +75,15 @@ public class SwiftySurrogate {
         return nil
     }
     
-    public class func decodeFromUnicodeScalar(unicodeScalar: UInt32) -> String {
-        return String(UnicodeScalar(unicodeScalar))
-    }
-    
-    // accept hex pair seperated by a ":"
-    // for example, "D83D:DE04"
-    public class func decodeFromSurrogatePair(#surrogatePair: String) -> String {
+    public class func decodeFromSurrogatePair(#surrogatePair: String) -> String? {
         if (!surrogatePair.contains(":")) {
             error = NSError(domain: ErrorDomain, code: ErrorWrongFormatSurrogate, userInfo: [NSLocalizedDescriptionKey: "Invalid Surrogate Pair Format - Colon Not Found"])
-            return EMPTY_STRING
+            return nil
         }
         var array = surrogatePair.componentsSeparatedByString(":")
         if (array.count > 2) {
             error = NSError(domain: ErrorDomain, code: ErrorWrongFormatSurrogate, userInfo: [NSLocalizedDescriptionKey: "Invalid Surrogate Pair Format - Too Many Colons"])
-            return EMPTY_STRING
+            return nil
         }
         var high = decodeHexStringToUInt32(array[0])
         var low = decodeHexStringToUInt32(array[1])
@@ -99,27 +94,30 @@ public class SwiftySurrogate {
         }
         
         error = NSError(domain: ErrorDomain, code: ErrorFailDecodeSurrogatePair, userInfo: [NSLocalizedDescriptionKey: "Decoding Surrogate Pair is Failed"])
-        return EMPTY_STRING
+        return nil
     }
     
-    public class func decodeFromSurrogatePair(#high: UInt32, low: UInt32) -> String {
+    public class func decodeFromSurrogatePair(#high: UInt32, low: UInt32) -> String? {
         var unicodeEntry = convSurrogatePairToUnicodeScalar(high: high, low: low)
-        return String(UnicodeScalar(unicodeEntry))
+        if let unicodeEntry = unicodeEntry {
+            return String(UnicodeScalar(unicodeEntry))
+        }
+        return nil
     }
     
-    public class func convUnicodeScalarToSurrogate(unicodeScalar: UInt32) -> (UInt32, UInt32) {
+    public class func convUnicodeScalarToSurrogatePair(unicodeScalar: UInt32) -> (UInt32?, UInt32?) {
         return (convUnicodeScalarToHighSurrogate(unicodeScalar), convUnicodeScalarToLowSurrogate(unicodeScalar))
     }
     
-    public class func convSurrogateToUnicodeScalar(surrogatePair: String) -> UInt32 {
+    public class func convSurrogateToUnicodeScalar(surrogatePair: String) -> UInt32? {
         if (!surrogatePair.contains(":")) {
             error = NSError(domain: ErrorDomain, code: ErrorWrongFormatSurrogate, userInfo: [NSLocalizedDescriptionKey: "Invalid Surrogate Pair Format - Colon Not Found"])
-            return 0
+            return nil
         }
         var array = surrogatePair.componentsSeparatedByString(":")
         if (array.count > 2) {
             error = NSError(domain: ErrorDomain, code: ErrorWrongFormatSurrogate, userInfo: [NSLocalizedDescriptionKey: "Invalid Surrogate Pair Format - Too Many Colons"])
-            return 0
+            return nil
         }
         var high = decodeHexStringToUInt32(array[0])
         var low = decodeHexStringToUInt32(array[1])
@@ -128,30 +126,51 @@ public class SwiftySurrogate {
                 return convSurrogatePairToUnicodeScalar(high: high, low: low)
             }
         }
-        return 0
+        return nil
     }
     
 // MARK: Private Methods
-    private class func convUnicodeScalarToHighSurrogate(unicodeScalar: UInt32) -> UInt32 {
-        return (((unicodeScalar - UNICODE_PLANE_MIN) >> SURROGATE_BITS) & HIGH_SURROGATE_MASK) | HIGH_SURROGATE_MIN
+    
+    private class func isHighSurrogate(high: UInt32) -> Bool {
+        return (high & (~HIGH_SURROGATE_MASK)) == HIGH_SURROGATE_MIN
     }
     
-    private class func convUnicodeScalarToLowSurrogate(unicodeScalar: UInt32) -> UInt32 {
-        return (unicodeScalar & LOW_SURROGATE_MASK) | LOW_SURROGATE_MIN
+    private class func isLowSurrogate(low: UInt32) -> Bool {
+        return (low & (~LOW_SURROGATE_MASK)) == LOW_SURROGATE_MIN
     }
     
-    private class func convSurrogatePairToUnicodeScalar(#high: UInt32, low: UInt32) -> UInt32 {
+    private class func convUnicodeScalarToHighSurrogate(unicodeScalar: UInt32) -> UInt32? {
+        var high = (((unicodeScalar - UNICODE_PLANE_MIN) >> SURROGATE_BITS) & HIGH_SURROGATE_MASK) | HIGH_SURROGATE_MIN
+        if (isHighSurrogate(high)) {
+            return high
+        }
+        return nil
+    }
+    
+    private class func convUnicodeScalarToLowSurrogate(unicodeScalar: UInt32) -> UInt32? {
+        var low = (unicodeScalar & LOW_SURROGATE_MASK) | LOW_SURROGATE_MIN
+        if (isLowSurrogate(low)) {
+            return low
+        }
+        return nil
+    }
+    
+    private class func convSurrogatePairToUnicodeScalar(#high: UInt32, low: UInt32) -> UInt32? {
         if (high < HIGH_SURROGATE_MIN) {
-            error = NSError(domain: ErrorDomain, code: ErrorSurrogateIndexOutOfBounds, userInfo: [NSLocalizedDescriptionKey: "High Surrogates must be greater than 0xD800"])
+            error = NSError(domain: ErrorDomain, code: ErrorSurrogateIndexOutOfBounds, userInfo: [NSLocalizedDescriptionKey: "High Surrogates (\(high.hexExpression())) must be greater than 0xD800"])
+            return nil
         }
         if (high > HIGH_SURROGATE_MAX) {
-            error = NSError(domain: ErrorDomain, code: ErrorSurrogateIndexOutOfBounds, userInfo: [NSLocalizedDescriptionKey: "High Surrogates must be less than 0xDBFF"])
+            error = NSError(domain: ErrorDomain, code: ErrorSurrogateIndexOutOfBounds, userInfo: [NSLocalizedDescriptionKey: "High Surrogates (\(high.hexExpression())) must be less than 0xDBFF"])
+            return nil
         }
         if (low < LOW_SURROGATE_MIN) {
-            error = NSError(domain: ErrorDomain, code: ErrorSurrogateIndexOutOfBounds, userInfo: [NSLocalizedDescriptionKey: "Low Surrogates must be greater than 0xDC00"])
+            error = NSError(domain: ErrorDomain, code: ErrorSurrogateIndexOutOfBounds, userInfo: [NSLocalizedDescriptionKey: "Low Surrogates (\(low.hexExpression())) must be greater than 0xDC00"])
+            return nil
         }
         if (low > LOW_SURROGATE_MAX) {
-            error = NSError(domain: ErrorDomain, code: ErrorSurrogateIndexOutOfBounds, userInfo: [NSLocalizedDescriptionKey: "Low Surrogates must be less than 0xDFFF"])
+            error = NSError(domain: ErrorDomain, code: ErrorSurrogateIndexOutOfBounds, userInfo: [NSLocalizedDescriptionKey: "Low Surrogates (\(low.hexExpression())) must be less than 0xDFFF"])
+            return nil
         }
         return ((high & HIGH_SURROGATE_MASK) << SURROGATE_BITS) + (low & LOW_SURROGATE_MASK) + UNICODE_PLANE_MIN;
     }
