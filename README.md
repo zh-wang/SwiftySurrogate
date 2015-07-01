@@ -7,15 +7,43 @@
 
 ## Usage
 
-To run the example project, clone the repo, and run `pod install` from the Example directory first.
+Use UTF16 surrogate easier in Swift.
+
+```swift
+    var emoji1 = SwiftySurrogate.decodeFromSurrogatePair(surrogatePair: "D83D:DCC9")
+    var emoji2 = SwiftySurrogate.decodeFromSurrogatePair(high: 0xD83C, low: 0xDF80)
+```
+
+You can convert between surrogate pair to unicode scalar.
+
+```swift
+    expect("D83D:DE04") == "\(SwiftySurrogate.convUnicodeScalarToSurrogatePair(0x1F604).0!.hexExpression()):\(SwiftySurrogate.convUnicodeScalarToSurrogatePair(0x1F604).1!.hexExpression())"
+    // true
+
+    expect(UInt32(0x1F604)) == SwiftySurrogate.convSurrogateToUnicodeScalar("D83D:DE04")
+    // true
+```
+
+Catch decoding error by optional check.
+
+```swift
+    // This will fail
+    if let res = SwiftySurrogate.decodeFromSurrogatePair(surrogatePair: "FFFF:DE04") {
+
+    } else {
+        // Get the error
+        println(SwiftySurrogate.lastError())
+        // print -> Optional(Error Domain=SwiftySurrogateErrorDomain Code=504 "High Surrogates (FFFF) must be less than 0xDBFF" 
+    }
+```
 
 ## Requirements
 
+iOS 8.0
+
 ## Installation
 
-SwiftySurrogate is available through [CocoaPods](http://cocoapods.org). To install
-it, simply add the following line to your Podfile:
-
+### Cocoapods
 ```ruby
 pod "SwiftySurrogate"
 ```
