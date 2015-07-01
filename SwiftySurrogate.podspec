@@ -9,7 +9,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "SwiftySurrogate"
-  s.version          = "0.1.3"
+  s.version          = "1.0.0"
   s.summary          = "Use UTF16 surrogate easier in Swift"
   s.homepage         = "https://github.com/zh-wang/SwiftySurrogate"
   s.license          = 'MIT'
