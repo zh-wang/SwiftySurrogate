@@ -6,45 +6,20 @@ import SwiftySurrogate
 
 class TableOfContentsSpec: QuickSpec {
     override func spec() {
-        describe("these will fail") {
-
-            it("can do maths") {
-                expect(1) == 2
-            }
-
-            it("can read") {
-                expect("number") == "string"
-            }
-
-            it("will eventually fail") {
-                expect("time").toEventually( equal("done") )
-            }
-            
-            context("these will pass") {
-
-                it("can do maths") {
-                    expect(23) == 23
-                }
-
-                it("can read") {
-                    expect("🐮") == "🐮"
-                }
-
-                it("will eventually pass") {
-                    var time = "passing"
-
-                    dispatch_async(dispatch_get_main_queue()) {
-                        time = "done"
-                    }
-
-                    waitUntil { done in
-                        NSThread.sleepForTimeInterval(0.5)
-                        expect(time) == "done"
-
-                        done()
-                    }
-                }
-            }
+        
+        it("hex expression ok?") {
+            expect("12FF") == UInt32(0x12FF).hexExpression()
         }
+        
+        it("emoji test: 😄 surrogate -> scalar ok?") {
+            expect("\u{1F604}") == SwiftySurrogate.decodeFromSurrogatePair(surrogatePair: "D83D:DE04")
+        }
+        
+        it("2-way conversion ok?") {
+            expect("D83D:DE04") == "\(SwiftySurrogate.convUnicodeScalarToSurrogate(0x1F604).0.hexExpression()):\(SwiftySurrogate.convUnicodeScalarToSurrogate(0x1F604).1.hexExpression())"
+            
+            expect(UInt32(0x1F604)) == SwiftySurrogate.convSurrogateToUnicodeScalar("D83D:DE04")
+        }
+        
     }
 }
