@@ -16,4 +16,4 @@ language: objective-c
 #- pod lib lint --quick
 
 script:
-xctool test -workspace Example/SwiftySurrogate.xcworkspace/ -scheme SwiftySurrogate-Example -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
+- xctool test -workspace Example/SwiftySurrogate.xcworkspace/ -scheme SwiftySurrogate-Example -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
