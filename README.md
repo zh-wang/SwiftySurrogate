@@ -48,6 +48,12 @@ iOS 8.0
 pod "SwiftySurrogate"
 ```
 
+### Carthage
+
+```
+github "zh-wang/SwiftySurrogate" >= 1.0.1
+```
+
 ## Author
 
 zh-wang, viennakanon@gmail.com
