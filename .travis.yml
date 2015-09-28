@@ -16,7 +16,7 @@ install:
 - pod install --project-directory=Example
 #script:
 #- set -o pipefail && xcodebuild test -workspace Example/SwiftySurrogate.xcworkspace -scheme SwiftySurrogate-Example -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO | xcpretty -c
-#- pod lib lint --quick
 
 script:
-- xctool test -workspace Example/SwiftySurrogate.xcworkspace/ -scheme SwiftySurrogate-Example -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
+- xctool test -workspace Example/SwiftySurrogate.xcworkspace/ -scheme SwiftySurrogate-Example -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO | xcpretty -c
+- pod lib lint --quick
