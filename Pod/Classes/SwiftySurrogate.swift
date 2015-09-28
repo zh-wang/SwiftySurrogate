@@ -75,7 +75,7 @@ public class SwiftySurrogate {
         return nil
     }
     
-    public class func decodeFromSurrogatePair(#surrogatePair: String) -> String? {
+    public class func decodeFromSurrogatePair(surrogatePair surrogatePair: String) -> String? {
         if (!surrogatePair.contains(":")) {
             error = NSError(domain: ErrorDomain, code: ErrorWrongFormatSurrogate, userInfo: [NSLocalizedDescriptionKey: "Invalid Surrogate Pair Format - Colon Not Found"])
             return nil
@@ -85,8 +85,8 @@ public class SwiftySurrogate {
             error = NSError(domain: ErrorDomain, code: ErrorWrongFormatSurrogate, userInfo: [NSLocalizedDescriptionKey: "Invalid Surrogate Pair Format - Too Many Colons"])
             return nil
         }
-        var high = decodeHexStringToUInt32(array[0])
-        var low = decodeHexStringToUInt32(array[1])
+        let high = decodeHexStringToUInt32(array[0])
+        let low = decodeHexStringToUInt32(array[1])
         if let high = high {
             if let low = low {
                 return decodeFromSurrogatePair(high: high, low: low)
@@ -97,8 +97,8 @@ public class SwiftySurrogate {
         return nil
     }
     
-    public class func decodeFromSurrogatePair(#high: UInt32, low: UInt32) -> String? {
-        var unicodeEntry = convSurrogatePairToUnicodeScalar(high: high, low: low)
+    public class func decodeFromSurrogatePair(high high: UInt32, low: UInt32) -> String? {
+        let unicodeEntry = convSurrogatePairToUnicodeScalar(high: high, low: low)
         if let unicodeEntry = unicodeEntry {
             return String(UnicodeScalar(unicodeEntry))
         }
@@ -119,8 +119,8 @@ public class SwiftySurrogate {
             error = NSError(domain: ErrorDomain, code: ErrorWrongFormatSurrogate, userInfo: [NSLocalizedDescriptionKey: "Invalid Surrogate Pair Format - Too Many Colons"])
             return nil
         }
-        var high = decodeHexStringToUInt32(array[0])
-        var low = decodeHexStringToUInt32(array[1])
+        let high = decodeHexStringToUInt32(array[0])
+        let low = decodeHexStringToUInt32(array[1])
         if let high = high {
             if let low = low {
                 return convSurrogatePairToUnicodeScalar(high: high, low: low)
@@ -140,7 +140,7 @@ public class SwiftySurrogate {
     }
     
     private class func convUnicodeScalarToHighSurrogate(unicodeScalar: UInt32) -> UInt32? {
-        var high = (((unicodeScalar - UNICODE_PLANE_MIN) >> SURROGATE_BITS) & HIGH_SURROGATE_MASK) | HIGH_SURROGATE_MIN
+        let high = (((unicodeScalar - UNICODE_PLANE_MIN) >> SURROGATE_BITS) & HIGH_SURROGATE_MASK) | HIGH_SURROGATE_MIN
         if (isHighSurrogate(high)) {
             return high
         }
@@ -148,14 +148,14 @@ public class SwiftySurrogate {
     }
     
     private class func convUnicodeScalarToLowSurrogate(unicodeScalar: UInt32) -> UInt32? {
-        var low = (unicodeScalar & LOW_SURROGATE_MASK) | LOW_SURROGATE_MIN
+        let low = (unicodeScalar & LOW_SURROGATE_MASK) | LOW_SURROGATE_MIN
         if (isLowSurrogate(low)) {
             return low
         }
         return nil
     }
     
-    private class func convSurrogatePairToUnicodeScalar(#high: UInt32, low: UInt32) -> UInt32? {
+    private class func convSurrogatePairToUnicodeScalar(high high: UInt32, low: UInt32) -> UInt32? {
         if (high < HIGH_SURROGATE_MIN) {
             error = NSError(domain: ErrorDomain, code: ErrorSurrogateIndexOutOfBounds, userInfo: [NSLocalizedDescriptionKey: "High Surrogates (\(high.hexExpression())) must be greater than 0xD800"])
             return nil
