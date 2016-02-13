@@ -43,7 +43,7 @@ iOS 8.0
 
 ## Installation
 
-### Cocoapods
+### CocoaPods
 ```ruby
 pod "SwiftySurrogate"
 ```
